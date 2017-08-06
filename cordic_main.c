@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#define ITERATION_COUNT 14
-__uint32_t z_table[7] = {1686584152, 526061546, 134022143, 33489151,8323135,2031631,458755};
 
 void verify( int x_i_init, int y_i_init, int z_i_init, int x_i, int y_i, int z_i) {
     double x_d_init, y_d_init, z_d_init, x_d, y_d, z_d;
