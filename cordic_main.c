@@ -1,35 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#define ITERATION_COUNT 15
-int z_table[15] = { 25735, 15192, 8027, 4074, 2045, 1023, 511, 255, 127, 63, 31, 15, 7, 3, 1};
-
-
-void cordic_V_fixed_point( register int *x, register int *y, register int *z) {
-    register int x_temp_1, y_temp_1, z_temp_1, z_temp;
-    register int x_temp_2, y_temp_2;
-    register int i;
-    x_temp_1 = *x;
-    y_temp_1 = *y;
-    z_temp = 0;
-    for( i=i^i; i<ITERATION_COUNT; i++) { /* we want 15 iterations */
-        if( y_temp_1 > 0) {
-            x_temp_2 = x_temp_1 + (y_temp_1 >> i);
-            y_temp_2 = y_temp_1 - (x_temp_1 >> i);
-            z_temp += z_table[i];
-        }
-        else {
-            x_temp_2 = x_temp_1 - (y_temp_1 >> i);
-            y_temp_2 = y_temp_1 + (x_temp_1 >> i);
-            z_temp -= z_table[i];
-        }
-        x_temp_1 = x_temp_2;
-        y_temp_1 = y_temp_2;
-    }
-    *x = x_temp_1;
-    *y = y_temp_1;
-    *z = z_temp;
-}
+#define ITERATION_COUNT 14
+__uint32_t z_table[7] = {1686584152, 526061546, 134022143, 33489151,8323135,2031631,458755};
 
 void verify( int x_i_init, int y_i_init, int z_i_init, int x_i, int y_i, int z_i) {
     double x_d_init, y_d_init, z_d_init, x_d, y_d, z_d;
