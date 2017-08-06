@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-
+#include "cordic.h"
 
 void verify( int x_i_init, int y_i_init, int z_i_init, int x_i, int y_i, int z_i) {
     double x_d_init, y_d_init, z_d_init, x_d, y_d, z_d;
@@ -27,7 +27,7 @@ int main( void) {
     y_i = (y_i_init = 24903);
     z_i_init = 23906;
     printf( "Vectoring CORDIC:\n\n");
-    cordic_V_fixed_point( &x_i, &y_i, &z_i);
+    z_i = cordic_V_fixed_point( &x_i, &y_i);
     verify( x_i_init, y_i_init, z_i_init, x_i, y_i, z_i);
     return 0;
 } /*** END of main() function ***/
