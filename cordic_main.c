@@ -27,7 +27,9 @@ int main( void) {
     y_i = (y_i_init = 24903);
     z_i_init = 23906;
     printf( "Vectoring CORDIC:\n\n");
-    z_i = cordic_V_fixed_point( &x_i, &y_i);
+    z_i = arctan_xy(0.849976, 0.759979);
     verify( x_i_init, y_i_init, z_i_init, x_i, y_i, z_i);
+    int test = cos_theta(30);
+    printf("test: %i\n", test);
     return 0;
 } /*** END of main() function ***/
