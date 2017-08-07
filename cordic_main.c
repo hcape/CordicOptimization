@@ -1,44 +1,16 @@
 #include <stdio.h>
 #include <math.h>
-
-#define ITERATION_COUNT 15
-int z_table[15] = { 25735, 15192, 8027, 4074, 2045, 1023, 511, 255, 127, 63, 31, 15, 7, 3, 1};
-
-
-void cordic_V_fixed_point( register int *x, register int *y, register int *z) {
-    register int x_temp_1, y_temp_1, z_temp_1, z_temp;
-    register int x_temp_2, y_temp_2;
-    register int i;
-    x_temp_1 = *x;
-    y_temp_1 = *y;
-    z_temp = 0;
-    for( i=i^i; i<ITERATION_COUNT; i++) { /* we want 15 iterations */
-        if( y_temp_1 > 0) {
-            x_temp_2 = x_temp_1 + (y_temp_1 >> i);
-            y_temp_2 = y_temp_1 - (x_temp_1 >> i);
-            z_temp += z_table[i];
-        }
-        else {
-            x_temp_2 = x_temp_1 - (y_temp_1 >> i);
-            y_temp_2 = y_temp_1 + (x_temp_1 >> i);
-            z_temp -= z_table[i];
-        }
-        x_temp_1 = x_temp_2;
-        y_temp_1 = y_temp_2;
-    }
-    *x = x_temp_1;
-    *y = y_temp_1;
-    *z = z_temp;
-}
-
+#include "cordic.h"
+#define SHIFT_SCALE 32768
+#define K_CONSTANT 0.607252935
 void verify( int x_i_init, int y_i_init, int z_i_init, int x_i, int y_i, int z_i) {
     double x_d_init, y_d_init, z_d_init, x_d, y_d, z_d;
-    x_d_init = (double)x_i_init / ( 1 << 15); /* float image of x_i_init */
-    y_d_init = (double)y_i_init / ( 1 << 15); /* float image of y_i_init */
-    z_d_init = (double)z_i_init / ( 1 << 15); /* float image of z_i_init */
-    x_d = ((double)x_i / ( 1 << 15)) * 0.607252935; /* float image of x_i */
-    y_d = ((double)y_i / ( 1 << 15)) * 0.607252935; /* float image of y_i */
-    z_d = ((double)z_i / ( 1 << 15)); /* float image of z_i */
+    x_d_init = (double)x_i_init / SHIFT_SCALE; /* float image of x_i_init */
+    y_d_init = (double)y_i_init / SHIFT_SCALE; /* float image of y_i_init */
+    z_d_init = (double)z_i_init / SHIFT_SCALE; /* float image of z_i_init */
+    x_d = ((double)x_i / SHIFT_SCALE) * K_CONSTANT; /* float image of x_i */
+    y_d = ((double)y_i / SHIFT_SCALE) * K_CONSTANT; /* float image of y_i */
+    z_d = ((double)z_i / SHIFT_SCALE); /* float image of z_i */
     printf( "x_i_init = %5i\tx_d_init = %f\n", x_i_init, x_d_init);
     printf( "y_i_init = %5i\ty_d_init = %f\n", y_i_init, y_d_init);
     printf( "z_i_init = %5i\tz_d_init = %f (rad)\n\n", z_i_init, z_d_init);
@@ -50,13 +22,12 @@ void verify( int x_i_init, int y_i_init, int z_i_init, int x_i, int y_i, int z_i
 } /*** END of verify() function ***/
 
 int main( void) {
-    int x_i_init, y_i_init, z_i_init; /* initial values */
-    int x_i, y_i, z_i; /* integer (fixed-point) variables */
-    x_i = (x_i_init = 27852);
-    y_i = (y_i_init = 24903);
-    z_i_init = 23906;
     printf( "Vectoring CORDIC:\n\n");
-    cordic_V_fixed_point( &x_i, &y_i, &z_i);
-    verify( x_i_init, y_i_init, z_i_init, x_i, y_i, z_i);
+
+    printf("arctanxy of 5 9: %f rad\n", ((float)arctan_xy_optimized(5,9) / SHIFT_SCALE));
+    printf("arctanx of 5: %f rad\n", ((float)arctan_x_optimized(5) / SHIFT_SCALE));
+    printf("cos of 30 deg: %f\n", ((float)cos_theta_optimized(30) / SHIFT_SCALE) * K_CONSTANT);
+    printf("sin of 30 deg: %f\n", ((float)sin_theta_optimized(30) / SHIFT_SCALE) * K_CONSTANT );
+
     return 0;
 } /*** END of main() function ***/
