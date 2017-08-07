@@ -29,7 +29,7 @@ int main( void) {
     printf( "Vectoring CORDIC:\n\n");
     z_i = arctan_xy(0.849976, 0.759979);
     verify( x_i_init, y_i_init, z_i_init, x_i, y_i, z_i);
-    int test = cos_theta(30);
+    int test = cos_theta(0);
     printf("test: %i\n", test);
     return 0;
 } /*** END of main() function ***/

@@ -12,8 +12,6 @@ int cordic_V_fixed_point( register int x, register int y) {
     register int i, z_table_temp;
     x_temp_1 = x;
     y_temp_1 = y;
-    printf("x_temp_1: %i\n", x_temp_1);
-    printf("y_temp_1: %i\n", y_temp_1);
     z_temp = 0;
 
     for( i=i^i; i!=ITERATION_COUNT; ++i) { /* we want 15 iterations */
@@ -43,6 +41,7 @@ int cordic_V_fixed_point( register int x, register int y) {
         }
         x_temp_1 = x_temp_2;
         y_temp_1 = y_temp_2;
+
     }
 
 
@@ -70,11 +69,11 @@ struct vector cordic_R_fixed_point(register int z) {
     register int i, z_table_temp;
     x_temp_1 = 1 << 15;
     y_temp_1 = 0;
-    z_temp = (z << 15);
+    z_temp = z  ;
 
     for( i=i^i; i!=ITERATION_COUNT; ++i) { /* we want 15 iterations */
         z_table_temp = z_table[i>>1];
-        if( z_temp <= 0) {
+        if( z_temp < 0) {
             x_temp_2 = x_temp_1 + (y_temp_1 >> i);
             y_temp_2 = y_temp_1 - (x_temp_1 >> i);
             z_temp += (z_table_temp >> 16);
@@ -87,15 +86,15 @@ struct vector cordic_R_fixed_point(register int z) {
         x_temp_1 = x_temp_2;
         y_temp_1 = y_temp_2;
         ++i;
-        if( z_temp <= 0) {
+        if( z_temp < 0) {
             x_temp_2 = x_temp_1 + (y_temp_1 >> i);
             y_temp_2 = y_temp_1 - (x_temp_1 >> i);
-            z_temp += (z_table_temp & 0xFFFF0000);
+            z_temp += (z_table_temp & 0xFFFF);
         }
         else {
             x_temp_2 = x_temp_1 - (y_temp_1 >> i);
             y_temp_2 = y_temp_1 + (x_temp_1 >> i);
-            z_temp -=  (z_table_temp & 0xFFFF0000);
+            z_temp -=  (z_table_temp & 0xFFFF);
         }
         x_temp_1 = x_temp_2;
         y_temp_1 = y_temp_2;
@@ -114,9 +113,11 @@ struct vector cordic_R_fixed_point(register int z) {
     struct vector v;
     v.x = x_temp_2;
     v.y = y_temp_2;
-    printf("test: %i", v.x);
+
+    printf("v.x: %i\tv.y: %i", v.x, v.y);
     return v;
 }
+
 
 __int32_t arctan_xy(double x, double y) {
     
@@ -132,15 +133,8 @@ __int32_t arctan_x(__int32_t x) {
     return cordic_V_fixed_point(1, (__int32_t)(x * (1<<15))); 
 }
 
-float cos_theta(__int32_t z){
-    if(z > 360)
-        return -1; //outside domain
-    else if(z > 90)
-        z -= 90;
-    else if(z < -90)
-        z += 90;
-       
-    return cordic_R_fixed_point(z).x;
+float cos_theta(float z){
+    return cordic_R_fixed_point((__int32_t) z *(1<<15)).x;
 }
 
 __int32_t sin_theta(__int32_t z){
