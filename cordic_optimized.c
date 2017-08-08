@@ -10,7 +10,7 @@ struct vector {
 };
 
 int cordic_V_fixed_point_optimized( register int x_temp_1, register int y_temp_1) {
-    register int z_temp_1, z_temp;
+    register int z_temp;
     register int x_temp_2, y_temp_2;
     register int i, z_table_temp;
     z_temp = 0;
@@ -50,7 +50,7 @@ int cordic_V_fixed_point_optimized( register int x_temp_1, register int y_temp_1
 }
 
 struct vector cordic_R_fixed_point_optimized(register int z_temp) {
-    register int x_temp_1, y_temp_1, z_temp_1;
+    register int x_temp_1, y_temp_1;
     register int x_temp_2, y_temp_2;
     register int i, z_table_temp;
     x_temp_1 = SHIFT_SCALE;
